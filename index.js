@@ -17,3 +17,10 @@ function verifyJWT(req, res, next) {
   if (!authHeader) {
     return res.status(401).send({ message: "Unauthorized Access" });
   }
+  
+const uri = "mongodb+srv://sensorcol:fRspAH6lC5nMdtpO@cluster0.rj030.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+});
