@@ -148,3 +148,131 @@ const run = async () => {
       app.get("/", async (req, res) => {
         res.send("Manufacturer Server Running");
       });
+        ////API to get all orders
+    app.get("/orders", async (req, res) => {
+        const orders = await ordersCollection.find({}).toArray();
+        res.send(orders);
+      });
+  
+      //API to update a order
+      app.put("/orders/:id", async (req, res) => {
+        const orderId = req.params.id;
+        const order = req.body;
+        console.log("order", order);
+        const query = { _id: ObjectId(orderId) };
+        const options = { upsert: true };
+        const updatedOrder = await ordersCollection.updateOne(
+          query,
+          {
+            $set: order,
+          },
+          options
+        );
+        res.send(updatedOrder);
+      });
+  
+      //API to get orders by user email
+      app.get("/orders/:email", async (req, res) => {
+        const email = req.params.email;
+        const orders = await ordersCollection
+          .find({ userEmail: email })
+          .toArray();
+        res.send(orders);
+      });
+      //API to get orders with multiple query parameters
+      app.get("/orders/:email/:isdelivered", async (req, res) => {
+        const email = req.params.email;
+        const isdelivered = req.params.isdelivered;
+        const orders = await ordersCollection
+          .find({ userEmail: email, isDelivered: true })
+          .toArray();
+        res.send(orders);
+      });
+  
+      //API to add a order
+      app.post("/orders", async (req, res) => {
+        const order = req.body;
+        const result = await ordersCollection.insertOne(order);
+        res.send(result);
+      });
+  
+      //API to delete a order
+      app.delete("/orders/:id", async (req, res) => {
+        const id = req.params.id;
+        console.log("id", id);
+        const result = await ordersCollection.deleteOne({ _id: ObjectId(id) });
+        res.send(result);
+      });
+  
+      //API to get all reviews
+      app.get("/reviews", async (req, res) => {
+        const reviews = await reviewsCollection.find({}).toArray();
+        res.send(reviews);
+      });
+  
+      //API to post a review
+      app.post("/review", verifyJWT, async (req, res) => {
+        // const decodedEmail = req.decoded.email;
+        // const email = req.headers.email;
+        const review = req.body;
+        const result = await reviewsCollection.insertOne(review);
+        res.send(result);
+        // if (email === decodedEmail) {
+          
+        // } else {
+        //   res.send("Unauthorized access");
+        // }
+      });
+  
+      //API to post a product
+      app.post("/product",  async (req, res) => {
+        // const decodedEmail = req.decoded.email;
+        // const email = req.headers.email;
+        const product = req.body;
+        console.log("product", product);
+        await toolsCollection.insertOne(product);
+        res.send(product);
+      });
+  
+      //API delete a product
+      app.delete("/product/:id", verifyJWT, async (req, res) => {
+        // const decodedEmail = req.decoded.email;
+        // const email = req.headers.email;
+        const id = req.params.id;
+        const result = await toolsCollection.deleteOne({ _id: ObjectId(id) });
+        res.send(result);
+       
+      });
+  
+      //API to update a tool
+      app.put("/product/:id", verifyJWT, async (req, res) => {
+        // const decodedEmail = req.decoded.email;
+        // const email = req.headers.email;
+        const id = req.params.id; 
+        const product = req.body;
+        console.log("product", product);
+        const options = { upsert: true };
+        const result = await toolsCollection.updateOne(
+          { _id: ObjectId(id) },
+          { $set: product },
+          options
+        );
+        res.send(result);
+       
+      });
+  
+      //API to get blogs
+  
+      app.get("/blogs", async (req, res) => {
+        const query = {};
+        const blogs = await blogsCollection.find(query).toArray();
+        res.send(blogs);
+      });
+    } finally {
+      // client.close();
+    }
+  };
+  
+  run().catch(console.dir);
+  
+  app.listen(port, () => console.log(`Listening on port ${port}`));
