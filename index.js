@@ -99,3 +99,52 @@ const run = async () => {
         const result = await adminsCollection.updateOne(filter, updateDoc, options);
         res.send(result);
       });
+      //API to remove admin
+    app.delete("/user/admin/:email", async (req, res) => {
+        const email = req.params.email;
+        const filter = { email: email };
+        const result = await adminsCollection.deleteOne(filter);
+        res.send(result);
+      }
+      );
+  
+      //API to get admin
+      app.get("/admin/:email", async (req, res) => {
+        const email = req.params.email;
+        const user = await adminsCollection.findOne({ email: email });
+        const isAdmin = user?.role === "admin";
+        res.send({ admin: isAdmin });
+      });
+  
+      //API to get all admin
+      app.get("/admin", async (req, res) => {
+        const admins = await adminsCollection.find({}).toArray();
+        res.send(admins); 
+      });
+  
+      //API to get all users
+      app.get("/users", async (req, res) => {
+        const users = await usersCollection.find({}).toArray();
+        res.send(users);
+      });
+  
+      //API to get single user
+      app.get("/user/:email", async (req, res) => {
+        const email = req.params.email;
+        const user = await usersCollection.findOne({ email: email });
+        res.send(user);
+      });
+  
+      //Authentication API
+      app.post("/login", async (req, res) => {
+        const user = req.body;
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+          expiresIn: "1d",
+        });
+        res.send({ accessToken });
+      });
+  
+      // API to Run Server
+      app.get("/", async (req, res) => {
+        res.send("Manufacturer Server Running");
+      });
