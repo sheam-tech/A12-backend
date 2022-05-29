@@ -24,3 +24,15 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+const run = async () => {
+    try {
+      await client.connect();
+      console.log("Connected to MongoDB");
+      const db = client.db("sensorcol");
+      const toolsCollection = db.collection("toolsCollection");
+      const ordersCollection = db.collection("ordersCollection");
+      const usersCollection = db.collection("usersCollection");
+      const reviewsCollection = db.collection("reviewsCollection");
+      const blogsCollection = db.collection("blogsCollection");
+      const adminsCollection = db.collection("adminsCollection");
+  
