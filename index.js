@@ -27,8 +27,7 @@ function verifyJWT(req, res, next) {
     next();
   });
 }
-
-const uri = "mongodb+srv://sensorcol:fRspAH6lC5nMdtpO@cluster0.rj030.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rj030.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
